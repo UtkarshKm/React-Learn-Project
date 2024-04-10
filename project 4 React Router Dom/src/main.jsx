@@ -12,7 +12,7 @@ import {
 import MainLayout from "./pages/mainlayout.jsx";
 import {AboutUs, Contact, Home} from "./components/";
 import User from "./components/User.jsx";
-import Github from "./components/Github.jsx";
+import Github, {githubInLoader} from "./components/Github.jsx";
 // const router = createBrowserRouter([
 // 	{
 // 		path: "/",
@@ -50,12 +50,17 @@ const router = createBrowserRouter(
 			/>
 			<Route
 				path="contact-us"
-      
 				element={<Contact />}
 			/>
-      <Route path =  "github"  element = {<Github/>} />
-			<Route path="user/:userId"
-      element = {<User/>} />
+			<Route
+				loader={githubInLoader}
+				path="github"
+				element={<Github />}
+			/>
+			<Route
+				path="user/:userId"
+				element={<User />}
+			/>
 		</Route>
 	)
 );
