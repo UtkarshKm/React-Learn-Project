@@ -1,2 +1,2 @@
 # React-Learn-Project
-project that I made for learning React
+Projects that I made to learn React
