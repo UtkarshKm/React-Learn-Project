@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {useState} from "react";
+import "./context";
+
+import "./App.css";
+import {TodoProvider} from "./context/ToContext";
 
 function App() {
-  const [count, setCount] = useState(0)
+	const [Todos, setTodos] = useState([]);
+	const addTodo = (todo) => {
+		//  1. setTodos([...Todos, todo])} //adding previous todos and new todo
+		// 2.  setTodos([...Todos, {id: Date.now(), todo, completed: false}])} //adding previous todos and new todo
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+		setTodos([...Todos, {id: Date.now(), ...todo}]);
+	}; //adding previous todos and new todo
+
+	const updateTodo = (id, todo) => {
+		setTodos(Todos.map((t) => (t.id === id ? {...t, todo} : t)));
+	};
+	const deleteTodo = (id) => {
+		setTodos(Todos.filter((t) => t.id !== id));
+	};
+  const toggleComplete = (id) => {
+    setTodos((prev)=> prev.map((prevTodo) => prevTodo.id === id ?  {...prevTodo , completed : !prevTodo.completed } : prevTodo))
+
+	return (
+		<TodoProvider
+			value={{todos, addTodo, updateTodo, deleteTodo, toggleComplete}}
+		>
+			<div className="bg-[#172842] min-h-screen py-8">
+				<div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
+					<h1 className="text-2xl font-bold text-center mb-8 mt-2">
+						Manage Your Todos
+					</h1>
+					<div className="mb-4">{/* Todo form goes here */}</div>
+					<div className="flex flex-wrap gap-y-3">
+						{/*Loop and Add TodoItem here */}
+					</div>
+				</div>
+			</div>
+		</TodoProvider>
+	);
 }
 
-export default App
+export default App;
