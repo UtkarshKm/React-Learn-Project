@@ -1,26 +1,47 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import "./context";
-
+import TodoItem from "./components/Todoitem";
 import "./App.css";
 import {TodoProvider} from "./context/ToContext";
+import TodoForm from "./components/Todoform";
 
 function App() {
-	const [Todos, setTodos] = useState([]);
+	const [todos, setTodos] = useState([]);
+
 	const addTodo = (todo) => {
 		//  1. setTodos([...Todos, todo])} //adding previous todos and new todo
 		// 2.  setTodos([...Todos, {id: Date.now(), todo, completed: false}])} //adding previous todos and new todo
 
-		setTodos([...Todos, {id: Date.now(), ...todo}]);
-	}; //adding previous todos and new todo
+		setTodos([...todos, {id: Date.now(), ...todo}]);
+	}; //adding previous todos and new tod
 
 	const updateTodo = (id, todo) => {
-		setTodos(Todos.map((t) => (t.id === id ? {...t, todo} : t)));
+		setTodos(todos.map((t) => (t.id === id ? {...t, todo} : t)));
 	};
 	const deleteTodo = (id) => {
-		setTodos(Todos.filter((t) => t.id !== id));
+		setTodos(todos.filter((t) => t.id !== id));
 	};
-  const toggleComplete = (id) => {
-    setTodos((prev)=> prev.map((prevTodo) => prevTodo.id === id ?  {...prevTodo , completed : !prevTodo.completed } : prevTodo))
+	const toggleComplete = (id) => {
+		setTodos((prev) =>
+			prev.map((prevTodo) =>
+				prevTodo.id === id
+					? {...prevTodo, completed: !prevTodo.completed}
+					: prevTodo
+			)
+		);
+	};
+
+	useEffect(() => {
+		const todos = JSON.parse(localStorage.getItem("todos"));
+
+		if (todos && todos.length > 0) {
+			setTodos(todos);
+		}
+	}, []);
+
+	useEffect(() => {
+		localStorage.setItem("todos", JSON.stringify(todos));
+	}, [todos]);
 
 	return (
 		<TodoProvider
@@ -31,9 +52,17 @@ function App() {
 					<h1 className="text-2xl font-bold text-center mb-8 mt-2">
 						Manage Your Todos
 					</h1>
-					<div className="mb-4">{/* Todo form goes here */}</div>
+					<div className="mb-4">
+						{/* Todo form goes here */}
+						<TodoForm />
+					</div>
 					<div className="flex flex-wrap gap-y-3">
 						{/*Loop and Add TodoItem here */}
+						{todos.map((todo)=>(
+						<div key={todo.id} className="w-full">
+							<TodoItem todo={todo} />
+						</div>
+						))}
 					</div>
 				</div>
 			</div>
