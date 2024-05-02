@@ -1,31 +1,38 @@
 import React, {useState} from "react";
 import authService from "../appwrite/auth";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {login} from "../store/authSlice";
 import Button from "./Btn";
 import Input from "./Input";
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
+import Logo from "./Logo";
 
 const Signup = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const {register, handleSubmit} = useForm();
-	const [error, setError] = useState("");
+	const [ error , setError] = useState("");
 
 	const createAccount = async (data) => {
 		setError("");
+		console.log("inside createAccount");
 		try {
 			const session = await authService.createAccount(data);
+			console.log("hitted createAccount");
 			if (session) {
+
+				console.log("account created");
 				const userData = await authService.getCurrentUser();
 				if (userData) {
+					console.log("inside userData");
 					dispatch(login(userData));
 					navigate("/");
 				}
 			}
 		} catch (error) {
 			setError(error.message);
+			console.log(error);
 		}
 	};
 
